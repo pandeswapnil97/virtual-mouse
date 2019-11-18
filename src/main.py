@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
 from pynput.mouse import Button, Controller
+import pyautogui as pgui
 import wx
 
 mouse = Controller()
 
 app = wx.App(False)
 (sx, sy) = wx.GetDisplaySize()
-(camx, camy) = (320, 240)
+(camx, camy) = (500, 500)
 
 lowerBound = np.array([33, 80, 40])
 upperBound = np.array([102, 255, 255])
@@ -87,7 +88,8 @@ while cam.isOpened():
         if pinchFlag == 0:
             if abs((x * h - openw * openh) * 100 // (w * h)) < 30:
                 pinchFlag = 1
-                mouse.press(Button.left)
+                #mouse.press(Button.left)
+                pgui.doubleClick()
                 openx, openy, openw, openh = (0, 0, 0, 0)
         else:
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -99,10 +101,12 @@ while cam.isOpened():
             while mouse.position != ((sx - (mouseLoc[0] * sx) // camx), (mouseLoc[1] * sy) // camy):
                 pass
             mLocOld = mouseLoc
-        # cv2.imshow("maskClose", maskClose)
-        # cv2.imshow("maskOpen", maskOpen)
-        # cv2.imshow("mask", mask)
+        cv2.imshow("maskClose", maskClose)
+        cv2.imshow("maskOpen", maskOpen)
+        cv2.imshow("mask", mask)
     cv2.imshow("Camera", img)
-    cv2.waitKey(10)
+    cv2.waitKey(5)
+    #if cv2.waitKey(0) == ord('q'):
+    #    break
 cam.release()
 cv2.destroyAllWindows()
